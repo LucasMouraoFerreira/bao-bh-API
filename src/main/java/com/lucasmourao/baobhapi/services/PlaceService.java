@@ -1,6 +1,7 @@
 package com.lucasmourao.baobhapi.services;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,11 @@ public class PlaceService {
 	
 	public List<Place> findAll(){
 		return placeRepository.findAll();
+	}
+	
+	public Place findById(Long id) {
+		Optional<Place> place = placeRepository.findById(id);
+		return place.get(); 
 	}
 	
 }

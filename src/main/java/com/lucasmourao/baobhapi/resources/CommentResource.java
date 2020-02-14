@@ -9,25 +9,25 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.lucasmourao.baobhapi.entities.Place;
-import com.lucasmourao.baobhapi.services.PlaceService;;
+import com.lucasmourao.baobhapi.entities.Comment;
+import com.lucasmourao.baobhapi.services.CommentService;;
 
 @RestController
-@RequestMapping(value = "/places")
-public class PlaceResource {
+@RequestMapping(value = "/comments")
+public class CommentResource {
 
 	@Autowired
-	private PlaceService placeService;
+	private CommentService commentService;
 	
 	@GetMapping
-	public ResponseEntity<List<Place>> findAll(){
-		List<Place> list = placeService.findAll();
+	public ResponseEntity<List<Comment>> findAll(){
+		List<Comment> list = commentService.findAll();
 		return ResponseEntity.ok().body(list);
 	}
 	
 	@GetMapping(value="/{id}")
-	public ResponseEntity<Place> findById(@PathVariable Long id){
-		Place place = placeService.findById(id);
-		return ResponseEntity.ok().body(place);
+	public ResponseEntity<Comment> findById(@PathVariable Long id){
+		Comment comment = commentService.findById(id);
+		return ResponseEntity.ok().body(comment);
 	}
 }

@@ -11,6 +11,8 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="tb_place")
 public class Place implements Serializable {
@@ -24,21 +26,24 @@ public class Place implements Serializable {
 	private String description;
 	private String address;
 	private String businessHours;
-	private Double avgScore;
+	private Double avgRating;
+	private Long numberOfRatings;
 
+	@JsonIgnore
 	@OneToMany(mappedBy = "place")
 	private List<Comment> comments = new ArrayList<>();
 	
 	public Place() {
 	}
 
-	public Place(Long id, String name, String description, String address, String businessHours, Double avgScore) {
+	public Place(Long id, String name, String description, String address, String businessHours, Double avgRating, Long numberOfRatings) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.address = address;
-		this.avgScore = avgScore;
-		this.businessHours = businessHours;			
+		this.avgRating = avgRating;
+		this.businessHours = businessHours;	
+		this.numberOfRatings = numberOfRatings;
 	}
 
 	public Long getId() {
@@ -81,16 +86,24 @@ public class Place implements Serializable {
 		this.businessHours = businessHours;
 	}
 
-	public Double getAvgScore() {
-		return avgScore;
+	public Double getAvgRating() {
+		return avgRating;
 	}
 
-	public void setAvgScore(Double avgScore) {
-		this.avgScore = avgScore;
+	public void setAvgRating(Double avgRating) {
+		this.avgRating = avgRating;
 	}
 	
 	public List<Comment> getComments() {
 		return comments;
+	}
+
+	public Long getNumberOfRatings() {
+		return numberOfRatings;
+	}
+
+	public void setNumberOfRatings(Long numberOfRatings) {
+		this.numberOfRatings = numberOfRatings;
 	}
 
 	@Override
