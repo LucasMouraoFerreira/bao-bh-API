@@ -1,13 +1,18 @@
 package com.lucasmourao.baobhapi.entities;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 
 @Entity
+@Table(name="tb_place")
 public class Place implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -18,13 +23,16 @@ public class Place implements Serializable {
 	private String name;
 	private String description;
 	private String address;
-	private String[] businessHours = new String[7];
+	private String businessHours;
 	private Double avgScore;
 
+	@OneToMany(mappedBy = "place")
+	private List<Comment> comments = new ArrayList<>();
+	
 	public Place() {
 	}
 
-	public Place(Long id, String name, String description, String address, String[] businessHours, Double avgScore) {
+	public Place(Long id, String name, String description, String address, String businessHours, Double avgScore) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -65,11 +73,11 @@ public class Place implements Serializable {
 		this.address = address;
 	}
 
-	public String[] getBusinessHours() {
+	public String getBusinessHours() {
 		return businessHours;
 	}
 
-	public void setBusinessHours(String[] businessHours) {
+	public void setBusinessHours(String businessHours) {
 		this.businessHours = businessHours;
 	}
 
@@ -79,6 +87,10 @@ public class Place implements Serializable {
 
 	public void setAvgScore(Double avgScore) {
 		this.avgScore = avgScore;
+	}
+	
+	public List<Comment> getComments() {
+		return comments;
 	}
 
 	@Override
@@ -105,5 +117,7 @@ public class Place implements Serializable {
 			return false;
 		return true;
 	}
+
+	
 
 }

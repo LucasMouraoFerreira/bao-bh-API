@@ -19,9 +19,9 @@ public class TestConfig implements CommandLineRunner{
 	
 	@Override
 	public void run(String... agrs) throws Exception{
-		String [] businessHours = {"Segunda: 8:00 às 17:00","Terça: 8:00 às 17:00","Quarta: 8:00 às 17:00",
-				"Quinta: 8:00 às 17:00","Sexta: 8:00 às 17:00","Sabádo: 8:00 às 17:00",
-				"Domingo: 8:00 às 17:00"};
+		String businessHours = "Segunda: 8:00 às 17:00;Terça: 8:00 às 17:00;Quarta: 8:00 às 17:00;"
+				+ "Quinta: 8:00 às 17:00;Sexta: 8:00 às 17:00;Sabádo: 8:00 às 17:00;Domingo: 8:00 às 17:00";
+		
 		Place place1 = new Place(null, "Zoologico", "Lugar para ver animais", "Rua Otacilio Negrão de Lima", businessHours, 4.5);
 		Place place2 = new Place(null, "Parque Ecologico", "Contato com a natureza", "Rua Otacilio Negrão de Lima", businessHours, 4.7);
 		
