@@ -26,6 +26,7 @@ public class Comment implements Serializable{
 	private Instant moment;
 	private String text;
 	private String author;
+	private Double rating;
 	
 
 
@@ -35,13 +36,14 @@ public class Comment implements Serializable{
 	
 	public Comment() {}
 
-	public Comment(Long id, Instant moment, String text, String author, Place place) {
+	public Comment(Long id, Instant moment, String text, String author, Place place, Double rating) {
 		super();
 		this.id = id;
 		this.moment = moment;
 		this.text = text;
 		this.author = author;
 		this.place = place;
+		this.rating = rating;
 	}
 
 	public Long getId() {
@@ -82,6 +84,14 @@ public class Comment implements Serializable{
 
 	public void setPlace(Place place) {
 		this.place = place;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 
 	@Override

@@ -27,7 +27,7 @@ public class CommentService {
 	}
 	
 	public Comment insert(Comment comment, Place place) {
-		Comment aux = new Comment(null, Instant.now(),comment.getText(),comment.getAuthor(),place);
+		Comment aux = new Comment(null, Instant.now(),comment.getText(),comment.getAuthor(),place,comment.getRating());
 		return commentRepository.save(aux);
 	}
 }

@@ -14,6 +14,7 @@ public class CommentDTO implements Serializable{
 	private String text;
 	private String placeName;
 	private Instant moment;
+	private Double rating;
 	
 	public CommentDTO() {}
 	
@@ -23,6 +24,7 @@ public class CommentDTO implements Serializable{
 		this.text = comment.getText();
 		this.moment = comment.getMoment();
 		this.placeName = comment.getPlace().getName();
+		this.rating = comment.getRating();
 	}
 
 	public Long getId() {
@@ -63,6 +65,14 @@ public class CommentDTO implements Serializable{
 
 	public void setMoment(Instant moment) {
 		this.moment = moment;
+	}
+
+	public Double getRating() {
+		return rating;
+	}
+
+	public void setRating(Double rating) {
+		this.rating = rating;
 	}
 	
 	

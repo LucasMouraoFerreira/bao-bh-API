@@ -34,8 +34,8 @@ public class TestConfig implements CommandLineRunner{
 		
 		placeRepository.saveAll(Arrays.asList(place1,place2));
 		
-		Comment comment1 = new Comment(null, Instant.now(),"Adorei ver o filhote de gorila","Vanessa",place1);
-		Comment comment2 = new Comment(null, Instant.now(),"Ótimo lugar para um piquenique","Roberson",place2);
+		Comment comment1 = new Comment(null, Instant.now(),"Adorei ver o filhote de gorila","Vanessa",place1,4.8);
+		Comment comment2 = new Comment(null, Instant.now(),"Ótimo lugar para um piquenique","Roberson",place2,4.9);
 				
 		commentRepository.saveAll(Arrays.asList(comment1,comment2));
 	}
