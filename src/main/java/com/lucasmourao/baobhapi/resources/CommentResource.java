@@ -6,9 +6,11 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -50,6 +52,19 @@ public class CommentResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId())
 				.toUri();
 		return ResponseEntity.created(uri).body(new CommentDTO(comment));
+	}
+	
+	@DeleteMapping(value="/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id){
+		commentService.delete(id);
+		return ResponseEntity.noContent().build();
+	}
+	
+	
+	@PutMapping(value="/{id}")
+	public ResponseEntity<CommentDTO> update(@PathVariable Long id, @RequestBody Comment comment){
+		comment = commentService.update(id, comment);
+		return ResponseEntity.ok().body(new CommentDTO(comment));
 	}
 
 }

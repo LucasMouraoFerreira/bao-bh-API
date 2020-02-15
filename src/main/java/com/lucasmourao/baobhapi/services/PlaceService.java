@@ -77,11 +77,23 @@ public class PlaceService {
 			if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
 				place.setAvgRating((comment.getRating() + (place.getAvgRating() * place.getNumberOfRatings()))
 						/ (place.getNumberOfRatings() + 1));
+				place.setNumberOfRatings(place.getNumberOfRatings() + 1);
 				placeRepository.save(place);
-			}
-			else {
+			} else {
 				throw new UpdateAvgRatingException();
 			}
+		}
+	}
+
+	public void updateAvgRating(Comment comment, Comment entity, Place place) {
+		if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
+			Double previousAvgRating = ((place.getAvgRating() * place.getNumberOfRatings()) - entity.getRating())
+					/ (place.getNumberOfRatings() - 1);
+			place.setAvgRating((comment.getRating() + (previousAvgRating * (place.getNumberOfRatings() - 1)))
+					/ (place.getNumberOfRatings()));
+			placeRepository.save(place);
+		} else {
+			throw new UpdateAvgRatingException();
 		}
 	}
 }
