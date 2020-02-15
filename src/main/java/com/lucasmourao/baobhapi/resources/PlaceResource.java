@@ -1,6 +1,7 @@
 package com.lucasmourao.baobhapi.resources;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lucasmourao.baobhapi.dto.SimplePlaceDTO;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.services.PlaceService;;
 
@@ -20,8 +22,8 @@ public class PlaceResource {
 	private PlaceService placeService;
 	
 	@GetMapping
-	public ResponseEntity<List<Place>> findAll(){
-		List<Place> list = placeService.findAll();
+	public ResponseEntity<List<SimplePlaceDTO>> findAll(){
+		List<SimplePlaceDTO> list = placeService.findAll().stream().map(x-> new SimplePlaceDTO(x)).collect(Collectors.toList());
 		return ResponseEntity.ok().body(list);
 	}
 	
