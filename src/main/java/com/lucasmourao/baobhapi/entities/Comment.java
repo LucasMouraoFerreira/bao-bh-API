@@ -27,6 +27,8 @@ public class Comment implements Serializable{
 	private String text;
 	private String author;
 	
+
+
 	@ManyToOne
 	@JoinColumn(name = "place_id")
 	private Place place;

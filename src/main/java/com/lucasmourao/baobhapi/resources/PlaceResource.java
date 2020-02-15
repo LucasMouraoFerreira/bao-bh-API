@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.lucasmourao.baobhapi.dto.CompletePlaceDTO;
 import com.lucasmourao.baobhapi.dto.SimplePlaceDTO;
-import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.services.PlaceService;;
 
 @RestController
@@ -28,8 +28,8 @@ public class PlaceResource {
 	}
 	
 	@GetMapping(value="/{id}")
-	public ResponseEntity<Place> findById(@PathVariable Long id){
-		Place place = placeService.findById(id);
+	public ResponseEntity<CompletePlaceDTO> findById(@PathVariable Long id){
+		CompletePlaceDTO place = new CompletePlaceDTO(placeService.findById(id));
 		return ResponseEntity.ok().body(place);
 	}
 }
