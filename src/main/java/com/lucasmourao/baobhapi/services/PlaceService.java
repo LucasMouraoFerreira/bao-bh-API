@@ -28,4 +28,8 @@ public class PlaceService {
 		return placeRepository.save(place);
 	}
 	
+	public void delete(Long id) {
+		placeRepository.deleteById(id);
+	}
+	
 }

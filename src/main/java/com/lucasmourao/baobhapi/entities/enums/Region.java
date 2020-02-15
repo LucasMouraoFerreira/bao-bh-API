@@ -2,15 +2,15 @@ package com.lucasmourao.baobhapi.entities.enums;
 
 public enum Region {
 	
-	PAMPULHA(1),
-	BARREIRO(2),
-	CENTRO_SUL(3),
-	LESTE(4),
-	NORDESTE(5),
-	NOROESTE(6),
-	NORTE(7),
-	OESTE(8),
-	VENDA_NOVA(9);
+	PAMPULHA(0),
+	BARREIRO(1),
+	CENTRO_SUL(2),
+	LESTE(3),
+	NORDESTE(4),
+	NOROESTE(5),
+	NORTE(6),
+	OESTE(7),
+	VENDA_NOVA(8);
 	
 	private int code;
 	

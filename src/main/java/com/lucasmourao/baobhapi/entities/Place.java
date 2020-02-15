@@ -12,6 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lucasmourao.baobhapi.entities.enums.Region;
 
 @Entity
@@ -34,6 +35,7 @@ public class Place implements Serializable {
 	
 	private Integer region;
 	
+	@JsonIgnore
 	@OneToMany(mappedBy = "place", fetch = FetchType.EAGER)
 	private List<Comment> comments = new ArrayList<>();
 	
