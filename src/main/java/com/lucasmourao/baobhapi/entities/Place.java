@@ -11,7 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.lucasmourao.baobhapi.entities.enums.Region;
 
 @Entity
 @Table(name="tb_place")
@@ -28,15 +28,18 @@ public class Place implements Serializable {
 	private String businessHours;
 	private Double avgRating;
 	private Long numberOfRatings;
-
-	@JsonIgnore
+	private Double latitude;
+	private Double longitude;
+	
+	private Integer region;
+	
 	@OneToMany(mappedBy = "place")
 	private List<Comment> comments = new ArrayList<>();
 	
 	public Place() {
 	}
 
-	public Place(Long id, String name, String description, String address, String businessHours, Double avgRating, Long numberOfRatings) {
+	public Place(Long id, String name, String description, String address, String businessHours, Double avgRating, Long numberOfRatings, Region region, Double latitude, Double longitude) {
 		this.id = id;
 		this.name = name;
 		this.description = description;
@@ -44,6 +47,9 @@ public class Place implements Serializable {
 		this.avgRating = avgRating;
 		this.businessHours = businessHours;	
 		this.numberOfRatings = numberOfRatings;
+		setRegion(region);
+		this.setLatitude(latitude);
+		this.setLongitude(longitude);
 	}
 
 	public Long getId() {
@@ -105,6 +111,32 @@ public class Place implements Serializable {
 	public void setNumberOfRatings(Long numberOfRatings) {
 		this.numberOfRatings = numberOfRatings;
 	}
+	
+	public Region getRegion() {
+		return Region.valueOf(region);
+	}
+
+	public void setRegion(Region region) {
+		if(region != null) {
+			this.region = region.getCode();
+		}		
+	}
+
+	public Double getLatitude() {
+		return latitude;
+	}
+
+	public void setLatitude(Double latitude) {
+		this.latitude = latitude;
+	}
+
+	public Double getLongitude() {
+		return longitude;
+	}
+
+	public void setLongitude(Double longitude) {
+		this.longitude = longitude;
+	}
 
 	@Override
 	public int hashCode() {
@@ -130,6 +162,7 @@ public class Place implements Serializable {
 			return false;
 		return true;
 	}
+
 
 	
 
