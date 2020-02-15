@@ -26,29 +26,30 @@ public class CommentResource {
 
 	@Autowired
 	private CommentService commentService;
-	
+
 	@Autowired
 	private PlaceService placeService;
-	
+
 	@GetMapping
-	public ResponseEntity<List<CommentDTO>> findAll(){
-		List<CommentDTO> list = commentService.findAll().stream().map(x->new CommentDTO(x)).collect(Collectors.toList());
+	public ResponseEntity<List<CommentDTO>> findAll() {
+		List<CommentDTO> list = commentService.findAll().stream().map(x -> new CommentDTO(x))
+				.collect(Collectors.toList());
 		return ResponseEntity.ok().body(list);
 	}
-	
-	@GetMapping(value="/{id}")
-	public ResponseEntity<CommentDTO> findById(@PathVariable Long id){
+
+	@GetMapping(value = "/{id}")
+	public ResponseEntity<CommentDTO> findById(@PathVariable Long id) {
 		CommentDTO comment = new CommentDTO(commentService.findById(id));
 		return ResponseEntity.ok().body(comment);
 	}
-	
-	@PostMapping(value="/addComment/{place_id}")
-	public ResponseEntity<CommentDTO> insert(@PathVariable Long place_id, @RequestBody Comment comment){
+
+	@PostMapping(value = "/addComment/{place_id}")
+	public ResponseEntity<CommentDTO> insert(@PathVariable Long place_id, @RequestBody Comment comment) {
 		Place place = placeService.findById(place_id);
 		comment = commentService.insert(comment, place);
-		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId()).toUri();
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}").buildAndExpand(comment.getId())
+				.toUri();
 		return ResponseEntity.created(uri).body(new CommentDTO(comment));
 	}
-	
-	
+
 }

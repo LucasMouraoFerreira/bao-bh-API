@@ -8,10 +8,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.repositories.PlaceRepository;
 import com.lucasmourao.baobhapi.services.exceptions.DatabaseException;
 import com.lucasmourao.baobhapi.services.exceptions.ResourceNotFoundException;
+import com.lucasmourao.baobhapi.services.exceptions.UpdateAvgRatingException;
 
 @Service
 public class PlaceService {
@@ -25,7 +27,7 @@ public class PlaceService {
 
 	public Place findById(Long id) {
 		Optional<Place> place = placeRepository.findById(id);
-		return place.orElseThrow(()-> new ResourceNotFoundException(id));
+		return place.orElseThrow(() -> new ResourceNotFoundException(id));
 	}
 
 	public Place insert(Place place) {
@@ -35,16 +37,16 @@ public class PlaceService {
 	public void delete(Long id) {
 		try {
 			placeRepository.deleteById(id);
-		}catch(EmptyResultDataAccessException e){
+		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException(id);
-		}catch(DataIntegrityViolationException e) {
+		} catch (DataIntegrityViolationException e) {
 			throw new DatabaseException(e.getMessage());
-		}		
+		}
 	}
 
 	public Place update(Long id, Place place) {
 		Optional<Place> entity = placeRepository.findById(id);
-		updateData(entity.orElseThrow(()-> new ResourceNotFoundException(id)), place);
+		updateData(entity.orElseThrow(() -> new ResourceNotFoundException(id)), place);
 		return placeRepository.save(entity.get());
 	}
 
@@ -67,6 +69,19 @@ public class PlaceService {
 		}
 		if (place.getLongitude() != null) {
 			entity.setLongitude(place.getLongitude());
+		}
+	}
+
+	public void newAvgRating(Comment comment, Place place) {
+		if (comment.getRating() != null) {
+			if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
+				place.setAvgRating((comment.getRating() + (place.getAvgRating() * place.getNumberOfRatings()))
+						/ (place.getNumberOfRatings() + 1));
+				placeRepository.save(place);
+			}
+			else {
+				throw new UpdateAvgRatingException();
+			}
 		}
 	}
 }
