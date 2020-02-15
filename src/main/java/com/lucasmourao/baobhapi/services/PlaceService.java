@@ -44,7 +44,7 @@ public class PlaceService {
 
 	public Place update(Long id, Place place) {
 		Optional<Place> entity = placeRepository.findById(id);
-		updateData(entity.get(), place);
+		updateData(entity.orElseThrow(()-> new ResourceNotFoundException(id)), place);
 		return placeRepository.save(entity.get());
 	}
 
