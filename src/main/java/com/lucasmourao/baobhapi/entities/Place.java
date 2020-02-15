@@ -116,7 +116,10 @@ public class Place implements Serializable {
 	}
 	
 	public Region getRegion() {
-		return Region.valueOf(region);
+		if(region != null) {
+			return Region.valueOf(region);
+		}
+		return null;
 	}
 
 	public void setRegion(Region region) {
