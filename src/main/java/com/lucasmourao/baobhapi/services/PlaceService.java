@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.repositories.PlaceRepository;
+import com.lucasmourao.baobhapi.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class PlaceService {
@@ -21,7 +22,7 @@ public class PlaceService {
 
 	public Place findById(Long id) {
 		Optional<Place> place = placeRepository.findById(id);
-		return place.get();
+		return place.orElseThrow(()-> new ResourceNotFoundException(id));
 	}
 
 	public Place insert(Place place) {

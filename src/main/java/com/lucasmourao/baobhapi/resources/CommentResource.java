@@ -42,7 +42,7 @@ public class CommentResource {
 		return ResponseEntity.ok().body(comment);
 	}
 	
-	@PostMapping(value="/{place_id}")
+	@PostMapping(value="/addComment/{place_id}")
 	public ResponseEntity<CommentDTO> insert(@PathVariable Long place_id, @RequestBody Comment comment){
 		Place place = placeService.findById(place_id);
 		comment = commentService.insert(comment, place);

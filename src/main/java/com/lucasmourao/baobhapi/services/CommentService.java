@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.repositories.CommentRepository;
+import com.lucasmourao.baobhapi.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class CommentService {
@@ -23,7 +24,7 @@ public class CommentService {
 	
 	public Comment findById(Long id) {
 		Optional<Comment> comment = commentRepository.findById(id);
-		return comment.get(); 
+		return comment.orElseThrow(()-> new ResourceNotFoundException(id)); 
 	}
 	
 	public Comment insert(Comment comment, Place place) {
