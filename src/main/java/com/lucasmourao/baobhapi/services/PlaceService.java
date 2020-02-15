@@ -24,4 +24,8 @@ public class PlaceService {
 		return place.get(); 
 	}
 	
+	public Place insert(Place place) {
+		return placeRepository.save(place);
+	}
+	
 }
