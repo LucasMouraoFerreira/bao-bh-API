@@ -74,5 +74,9 @@ public class CommentService {
 			entity.setRating(comment.getRating());			
 		}
 	}
+	
+	public List<Comment> findByAuthor(String author){
+		return commentRepository.findByAuthorContainingIgnoreCase(author);
+	}
 
 }

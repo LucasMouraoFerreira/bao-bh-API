@@ -13,12 +13,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lucasmourao.baobhapi.dto.CommentDTO;
 import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
+import com.lucasmourao.baobhapi.resources.util.URL;
 import com.lucasmourao.baobhapi.services.CommentService;
 import com.lucasmourao.baobhapi.services.PlaceService;;
 
@@ -53,18 +55,24 @@ public class CommentResource {
 				.toUri();
 		return ResponseEntity.created(uri).body(new CommentDTO(comment));
 	}
-	
-	@DeleteMapping(value="/{id}")
-	public ResponseEntity<Void> delete(@PathVariable Long id){
+
+	@DeleteMapping(value = "/{id}")
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		commentService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
-	
-	
-	@PutMapping(value="/{id}")
-	public ResponseEntity<CommentDTO> update(@PathVariable Long id, @RequestBody Comment comment){
+
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<CommentDTO> update(@PathVariable Long id, @RequestBody Comment comment) {
 		comment = commentService.update(id, comment);
 		return ResponseEntity.ok().body(new CommentDTO(comment));
+	}
+
+	@GetMapping(value = "/authorsearch")
+	public ResponseEntity<List<CommentDTO>> findByAuthor(@RequestParam(value = "author", defaultValue = "") String author) {
+		author = URL.decodeParam(author);
+		List<CommentDTO> comments = commentService.findByAuthor(author).stream().map(c -> new CommentDTO(c)).collect(Collectors.toList());
+		return ResponseEntity.ok().body(comments);
 	}
 
 }
