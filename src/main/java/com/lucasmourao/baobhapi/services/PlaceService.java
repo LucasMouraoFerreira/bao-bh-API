@@ -96,4 +96,12 @@ public class PlaceService {
 			throw new UpdateAvgRatingException();
 		}
 	}
+
+	public List<Place> searchByRatingText(Double rating, String text) {
+		return placeRepository.searchByRatingText(rating, text);
+	}
+
+	public List<Place> searchByRatingTextRegion(Double rating, String text, Integer region) {
+		return placeRepository.searchByRatingTextRegion(rating, text, region);
+	}
 }
