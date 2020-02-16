@@ -2,12 +2,14 @@ package com.lucasmourao.baobhapi.services;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
+import com.lucasmourao.baobhapi.dto.SimplePlaceWithDistanceDTO;
 import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.repositories.PlaceRepository;
@@ -22,7 +24,7 @@ public class PlaceService {
 	private PlaceRepository placeRepository;
 
 	public List<Place> findAll() {
-		return placeRepository.findAll();
+		return placeRepository.findAllByOrderByAvgRatingDesc();
 	}
 
 	public Place findById(Long id) {
@@ -103,5 +105,31 @@ public class PlaceService {
 
 	public List<Place> searchByRatingTextRegion(Double rating, String text, Integer region) {
 		return placeRepository.searchByRatingTextRegion(rating, text, region);
+	}
+
+	public List<SimplePlaceWithDistanceDTO> findNearbyPlaces(Double latitude, Double longitude, Double maxDistanceKm) {
+		List<Place> places = placeRepository.findAllByOrderByAvgRatingDesc();
+		return places.stream().filter(
+				p -> getDistanceFromLatLonInKm(p.getLatitude(), p.getLongitude(), latitude, longitude) <= maxDistanceKm)
+				.map(p -> new SimplePlaceWithDistanceDTO(p,
+						getDistanceFromLatLonInKm(p.getLatitude(), p.getLongitude(), latitude, longitude)))
+				.collect(Collectors.toList());
+	}
+
+	private double getDistanceFromLatLonInKm(double lat1, double lon1, double lat2, double lon2) {
+
+		double R = 6371.0; // Radius of the earth in km
+		double dLat = deg2rad(lat2 - lat1);
+		double dLon = deg2rad(lon2 - lon1);
+		double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+				+ Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+		double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+		double d = R * c; // Distance in km
+		return d;
+
+	}
+
+	private double deg2rad(double deg) {
+		return deg * (Math.PI / 180);
 	}
 }

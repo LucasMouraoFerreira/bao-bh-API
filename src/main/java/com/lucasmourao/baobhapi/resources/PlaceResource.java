@@ -19,6 +19,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.lucasmourao.baobhapi.dto.CompletePlaceDTO;
 import com.lucasmourao.baobhapi.dto.SimplePlaceDTO;
+import com.lucasmourao.baobhapi.dto.SimplePlaceWithDistanceDTO;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.entities.enums.Region;
 import com.lucasmourao.baobhapi.resources.util.URL;
@@ -73,11 +74,28 @@ public class PlaceResource {
 
 		List<SimplePlaceDTO> list;
 		if (region != null && Region.validRegion(region)) {
-			list = placeService.searchByRatingTextRegion(rating, text, region).stream()
-					.map(x -> new SimplePlaceDTO(x)).collect(Collectors.toList());
+			list = placeService.searchByRatingTextRegion(rating, text, region).stream().map(x -> new SimplePlaceDTO(x))
+					.collect(Collectors.toList());
 		} else {
 			list = placeService.searchByRatingText(rating, text).stream().map(x -> new SimplePlaceDTO(x))
 					.collect(Collectors.toList());
+		}
+
+		return ResponseEntity.ok().body(list);
+	}
+
+	@GetMapping(value = "/findnearbyplaces")
+	public ResponseEntity<List<SimplePlaceWithDistanceDTO>> findNearbyPlaces(
+			@RequestParam(value = "latitude", defaultValue = "") Double latitude,
+			@RequestParam(value = "longitude", defaultValue = "") Double longitude,
+			@RequestParam(value = "maxDistanceKm", defaultValue = "") Double maxDistanceKm) {
+
+		List<SimplePlaceWithDistanceDTO> list;
+		if (latitude == null || longitude == null || maxDistanceKm == null) {
+			list = placeService.findAll().stream().map(x -> new SimplePlaceWithDistanceDTO(x, null))
+					.collect(Collectors.toList());
+		} else {
+			list = placeService.findNearbyPlaces(latitude, longitude, maxDistanceKm);
 		}
 
 		return ResponseEntity.ok().body(list);
