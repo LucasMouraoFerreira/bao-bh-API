@@ -2,6 +2,8 @@ package com.lucasmourao.baobhapi.repositories;
 
 import java.util.List;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -17,6 +19,7 @@ public interface PlaceRepository extends JpaRepository<Place, Long> {
 	List<Place> searchByRatingTextRegion(@Param("rating") Double rating, @Param("text") String text,
 			@Param("region") Integer region);
 
-	List<Place> findAllByOrderByAvgRatingDesc();
+	Page<Place> findAll(Pageable pageable);
 
+	List<Place> findAllByOrderByAvgRatingDesc();
 }

@@ -61,4 +61,14 @@ public class ResourceExceptionHandler {
 				request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
+
+	@ExceptionHandler(FindNearbyPlacesException.class)
+	public ResponseEntity<StandardError> findNearbyPlacesException(FindNearbyPlacesException e, HttpServletRequest request) {
+		String error = "latitude and longitude must be informed";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(),
+				request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
 }

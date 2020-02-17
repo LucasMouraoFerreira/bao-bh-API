@@ -7,8 +7,11 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.lucasmourao.baobhapi.dto.SimplePlaceDTO;
 import com.lucasmourao.baobhapi.dto.SimplePlaceWithDistanceDTO;
 import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
@@ -23,10 +26,10 @@ public class PlaceService {
 	@Autowired
 	private PlaceRepository placeRepository;
 
-	public List<Place> findAll() {
-		return placeRepository.findAllByOrderByAvgRatingDesc();
+	public Page<SimplePlaceDTO> findAll(Pageable pageable){
+		return placeRepository.findAll(pageable).map(x-> new SimplePlaceDTO(x));
 	}
-
+	
 	public Place findById(Long id) {
 		Optional<Place> place = placeRepository.findById(id);
 		return place.orElseThrow(() -> new ResourceNotFoundException(id));

@@ -6,6 +6,10 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,6 +29,7 @@ import com.lucasmourao.baobhapi.dto.SimplePlaceWithDistanceDTO;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.entities.enums.Region;
 import com.lucasmourao.baobhapi.geocodingAPI.GeocodingResult;
+import com.lucasmourao.baobhapi.resources.exceptions.FindNearbyPlacesException;
 import com.lucasmourao.baobhapi.resources.exceptions.GeocodingApiCallException;
 import com.lucasmourao.baobhapi.resources.util.URL;
 import com.lucasmourao.baobhapi.services.PlaceService;;
@@ -43,9 +48,12 @@ public class PlaceResource {
 	private RestTemplate restTemplate;
 
 	@GetMapping
-	public ResponseEntity<List<SimplePlaceDTO>> findAll() {
-		List<SimplePlaceDTO> list = placeService.findAll().stream().map(x -> new SimplePlaceDTO(x))
-				.collect(Collectors.toList());
+	public ResponseEntity<Page<SimplePlaceDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "limit", defaultValue = "10") int limit) {
+		
+		Pageable pageable = PageRequest.of(page, limit, Sort.by("avgRating").descending());
+		
+		Page<SimplePlaceDTO> list = placeService.findAll(pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -102,8 +110,7 @@ public class PlaceResource {
 
 		List<SimplePlaceWithDistanceDTO> list;
 		if (latitude == null || longitude == null) {
-			list = placeService.findAll().stream().map(x -> new SimplePlaceWithDistanceDTO(x, null))
-					.collect(Collectors.toList());
+			throw new FindNearbyPlacesException("Error : latitude and longitude must be informed");
 		} else {
 			list = placeService.findNearbyPlaces(latitude, longitude, maxDistanceKm);
 		}
@@ -119,16 +126,15 @@ public class PlaceResource {
 		GeocodingResult geocodingResult = restTemplate
 				.getForObject("https://maps.googleapis.com/maps/api/geocode/json?address=" + address
 						+ "&components=country:BR" + "&key=" + apiKey, GeocodingResult.class);
-		
+
 		if (!geocodingResult.getStatus().contains("OK")) {
 			throw new GeocodingApiCallException("Error: " + geocodingResult.getStatus());
 		}
 
 		List<SimplePlaceWithDistanceDTO> list = placeService.findNearbyPlaces(
 				geocodingResult.getResults().get(0).getGeometry().getLocation().getLat(),
-				geocodingResult.getResults().get(0).getGeometry().getLocation().getLng()
-				,maxDistanceKm);
-		 
+				geocodingResult.getResults().get(0).getGeometry().getLocation().getLng(), maxDistanceKm);
+
 		return ResponseEntity.ok().body(list);
 	}
 
