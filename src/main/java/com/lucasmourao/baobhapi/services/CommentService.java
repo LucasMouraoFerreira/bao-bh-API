@@ -41,16 +41,18 @@ public class CommentService {
 				comment.getRating());
 		return commentRepository.save(aux);
 	}
-	
+
 	public void delete(Long id) {
 		try {
+			Optional<Comment> comment = commentRepository.findById(id);
+			placeService.deletedCommentUpdateAvgRating(comment.orElseThrow(() -> new ResourceNotFoundException(id)),
+					comment.orElseThrow(() -> new ResourceNotFoundException(id)).getPlace());
 			commentRepository.deleteById(id);
 		} catch (EmptyResultDataAccessException e) {
 			throw new ResourceNotFoundException(id);
-		} 
+		}
 	}
 
-	
 	public Comment update(Long id, Comment comment) {
 		Optional<Comment> entity = commentRepository.findById(id);
 		updateData(entity.orElseThrow(() -> new ResourceNotFoundException(id)), comment);
@@ -65,17 +67,16 @@ public class CommentService {
 			entity.setText(comment.getText());
 		}
 		if (comment.getRating() != null) {
-			if(entity.getRating() == null) {
+			if (entity.getRating() == null) {
 				placeService.newAvgRating(comment, entity.getPlace());
-			}
-			else {
+			} else {
 				placeService.updateAvgRating(comment, entity, entity.getPlace());
 			}
-			entity.setRating(comment.getRating());			
+			entity.setRating(comment.getRating());
 		}
 	}
-	
-	public List<Comment> findByAuthor(String author){
+
+	public List<Comment> findByAuthor(String author) {
 		return commentRepository.findByAuthorContainingIgnoreCase(author);
 	}
 

@@ -80,9 +80,31 @@ public class PlaceService {
 	public void newAvgRating(Comment comment, Place place) {
 		if (comment.getRating() != null) {
 			if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
+			
 				place.setAvgRating((comment.getRating() + (place.getAvgRating() * place.getNumberOfRatings()))
 						/ (place.getNumberOfRatings() + 1));
+				
 				place.setNumberOfRatings(place.getNumberOfRatings() + 1);
+				placeRepository.save(place);
+			} else {
+				throw new UpdateAvgRatingException();
+			}
+		}
+	}
+	
+	public void deletedCommentUpdateAvgRating(Comment comment, Place place) {
+		if (comment.getRating() != null) {
+			if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
+			
+				Double previousAvgRating;
+				if(place.getNumberOfRatings() == 1) {
+					previousAvgRating = 0.0;
+				}else {
+					previousAvgRating = ((place.getAvgRating() * place.getNumberOfRatings()) - comment.getRating())
+							/ (place.getNumberOfRatings() - 1);
+				}
+				place.setAvgRating(previousAvgRating);
+				place.setNumberOfRatings(place.getNumberOfRatings() - 1);
 				placeRepository.save(place);
 			} else {
 				throw new UpdateAvgRatingException();
@@ -92,10 +114,18 @@ public class PlaceService {
 
 	public void updateAvgRating(Comment comment, Comment entity, Place place) {
 		if (comment.getRating() >= 0.0 && comment.getRating() <= 5.0) {
-			Double previousAvgRating = ((place.getAvgRating() * place.getNumberOfRatings()) - entity.getRating())
-					/ (place.getNumberOfRatings() - 1);
+			
+			Double previousAvgRating;
+			if(place.getNumberOfRatings() == 1) {
+				previousAvgRating = 0.0;
+			}else {
+				previousAvgRating = ((place.getAvgRating() * place.getNumberOfRatings()) - entity.getRating())
+						/ (place.getNumberOfRatings() - 1);
+			}			
+			
 			place.setAvgRating((comment.getRating() + (previousAvgRating * (place.getNumberOfRatings() - 1)))
 					/ (place.getNumberOfRatings()));
+			
 			placeRepository.save(place);
 		} else {
 			throw new UpdateAvgRatingException();
