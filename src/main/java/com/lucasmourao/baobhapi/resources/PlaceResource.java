@@ -2,7 +2,6 @@ package com.lucasmourao.baobhapi.resources;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -50,9 +49,9 @@ public class PlaceResource {
 	@GetMapping
 	public ResponseEntity<Page<SimplePlaceDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
 			@RequestParam(value = "limit", defaultValue = "10") int limit) {
-		
+
 		Pageable pageable = PageRequest.of(page, limit, Sort.by("avgRating").descending());
-		
+
 		Page<SimplePlaceDTO> list = placeService.findAll(pageable);
 		return ResponseEntity.ok().body(list);
 	}
@@ -83,20 +82,23 @@ public class PlaceResource {
 	}
 
 	@GetMapping(value = "/fullsearch")
-	public ResponseEntity<List<SimplePlaceDTO>> searchByRatingName(
+	public ResponseEntity<Page<SimplePlaceDTO>> searchByRatingName(
 			@RequestParam(value = "rating", defaultValue = "0.0") Double rating,
 			@RequestParam(value = "text", defaultValue = "") String text,
-			@RequestParam(value = "region", defaultValue = "") Integer region) {
+			@RequestParam(value = "region", defaultValue = "") Integer region,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "limit", defaultValue = "10") int limit) {
 
 		text = URL.decodeParam(text);
 
-		List<SimplePlaceDTO> list;
+		Pageable pageable = PageRequest.of(page, limit, Sort.by("avgRating").descending());
+
+		Page<SimplePlaceDTO> list;
+
 		if (region != null && Region.validRegion(region)) {
-			list = placeService.searchByRatingTextRegion(rating, text, region).stream().map(x -> new SimplePlaceDTO(x))
-					.collect(Collectors.toList());
+			list = placeService.searchByRatingTextRegion(rating, text, region, pageable);
 		} else {
-			list = placeService.searchByRatingText(rating, text).stream().map(x -> new SimplePlaceDTO(x))
-					.collect(Collectors.toList());
+			list = placeService.searchByRatingText(rating, text, pageable);
 		}
 
 		return ResponseEntity.ok().body(list);

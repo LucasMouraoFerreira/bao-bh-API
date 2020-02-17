@@ -132,12 +132,12 @@ public class PlaceService {
 		}
 	}
 
-	public List<Place> searchByRatingText(Double rating, String text) {
-		return placeRepository.searchByRatingText(rating, text);
+	public Page<SimplePlaceDTO> searchByRatingText(Double rating, String text, Pageable pageable) {
+		return placeRepository.searchByRatingText(rating, text, pageable).map(x-> new SimplePlaceDTO(x));
 	}
 
-	public List<Place> searchByRatingTextRegion(Double rating, String text, Integer region) {
-		return placeRepository.searchByRatingTextRegion(rating, text, region);
+	public Page<SimplePlaceDTO> searchByRatingTextRegion(Double rating, String text, Integer region, Pageable pageable) {
+		return placeRepository.searchByRatingTextRegion(rating, text, region, pageable).map(x-> new SimplePlaceDTO(x));
 	}
 
 	public List<SimplePlaceWithDistanceDTO> findNearbyPlaces(Double latitude, Double longitude, Double maxDistanceKm) {

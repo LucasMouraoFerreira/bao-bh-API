@@ -13,11 +13,11 @@ import com.lucasmourao.baobhapi.entities.Place;
 public interface PlaceRepository extends JpaRepository<Place, Long> {
 
 	@Query("SELECT p FROM Place p where (p.avgRating >= :rating and (UPPER(p.description) like UPPER(concat('%', :text,'%')) or UPPER(p.name) like UPPER(concat('%', :text,'%')))) order by p.avgRating desc")
-	List<Place> searchByRatingText(@Param("rating") Double rating, @Param("text") String text);
+	Page<Place> searchByRatingText(@Param("rating") Double rating, @Param("text") String text, Pageable pageable);
 
 	@Query("SELECT p FROM Place p where (p.avgRating >= :rating and (UPPER(p.description) like UPPER(concat('%', :text,'%')) or UPPER(p.name) like UPPER(concat('%', :text,'%'))) and p.region = :region) order by p.avgRating desc")
-	List<Place> searchByRatingTextRegion(@Param("rating") Double rating, @Param("text") String text,
-			@Param("region") Integer region);
+	Page<Place> searchByRatingTextRegion(@Param("rating") Double rating, @Param("text") String text,
+			@Param("region") Integer region, Pageable pageable);
 
 	Page<Place> findAll(Pageable pageable);
 
