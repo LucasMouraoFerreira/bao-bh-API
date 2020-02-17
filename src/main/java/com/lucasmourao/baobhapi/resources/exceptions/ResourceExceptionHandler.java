@@ -52,4 +52,13 @@ public class ResourceExceptionHandler {
 				request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
+	
+	@ExceptionHandler(GeocodingApiCallException.class)
+	public ResponseEntity<StandardError> geocodingApiCall(GeocodingApiCallException e, HttpServletRequest request) {
+		String error = "Geocoding API call error";
+		HttpStatus status = HttpStatus.EXPECTATION_FAILED;
+		StandardError err = new StandardError(Instant.now(), status.value(), error, e.getMessage(),
+				request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
 }
