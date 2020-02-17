@@ -1,10 +1,11 @@
 package com.lucasmourao.baobhapi.resources;
 
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,9 +36,12 @@ public class CommentResource {
 	private PlaceService placeService;
 
 	@GetMapping
-	public ResponseEntity<List<CommentDTO>> findAll() {
-		List<CommentDTO> list = commentService.findAll().stream().map(x -> new CommentDTO(x))
-				.collect(Collectors.toList());
+	public ResponseEntity<Page<CommentDTO>> findAll(@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "limit", defaultValue = "10") int limit) {
+		
+		Pageable pageable = PageRequest.of(page, limit);
+		
+		Page<CommentDTO> list = commentService.findAll(pageable);
 		return ResponseEntity.ok().body(list);
 	}
 
@@ -69,9 +73,15 @@ public class CommentResource {
 	}
 
 	@GetMapping(value = "/authorsearch")
-	public ResponseEntity<List<CommentDTO>> findByAuthor(@RequestParam(value = "author", defaultValue = "") String author) {
+	public ResponseEntity<Page<CommentDTO>> findByAuthor(
+			@RequestParam(value = "author", defaultValue = "") String author,
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			@RequestParam(value = "limit", defaultValue = "10") int limit) {
+		
 		author = URL.decodeParam(author);
-		List<CommentDTO> comments = commentService.findByAuthor(author).stream().map(c -> new CommentDTO(c)).collect(Collectors.toList());
+		Pageable pageable = PageRequest.of(page, limit);
+		
+		Page<CommentDTO> comments = commentService.findByAuthorName(author, pageable);
 		return ResponseEntity.ok().body(comments);
 	}
 

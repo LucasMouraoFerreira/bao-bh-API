@@ -1,13 +1,15 @@
 package com.lucasmourao.baobhapi.services;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.lucasmourao.baobhapi.dto.CommentDTO;
 import com.lucasmourao.baobhapi.entities.Comment;
 import com.lucasmourao.baobhapi.entities.Place;
 import com.lucasmourao.baobhapi.repositories.CommentRepository;
@@ -23,8 +25,8 @@ public class CommentService {
 	@Autowired
 	private PlaceService placeService;
 
-	public List<Comment> findAll() {
-		return commentRepository.findAll();
+	public Page<CommentDTO> findAll(Pageable pageable) {
+		return commentRepository.findAll(pageable).map(x->new CommentDTO(x));
 	}
 
 	public Comment findById(Long id) {
@@ -76,8 +78,8 @@ public class CommentService {
 		}
 	}
 
-	public List<Comment> findByAuthor(String author) {
-		return commentRepository.findByAuthorContainingIgnoreCase(author);
+	public Page<CommentDTO> findByAuthorName(String author, Pageable pageable) {
+		return commentRepository.findByAuthorName(author, pageable).map(x -> new CommentDTO(x));
 	}
 
 }
